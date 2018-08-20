@@ -15,6 +15,7 @@ import (
 func TestGenerate(t *testing.T) {
 	cfg := astparser.Config{
 		InputDir: "fixtures_test",
+		IncludeRegexp: "test.go",
 	}
 	sources, err := astparser.Load(cfg)
 	require.NoError(t, err)

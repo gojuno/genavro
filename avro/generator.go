@@ -61,6 +61,9 @@ type dep struct {
 	deps   []string
 }
 
+// Generate converts structs from parsed files to avro protocol.
+// Every struct ending with `V\d` will be parsed as Separate top level event and will be generated to separate protocol.
+// e.g. MetricsV1 will be generated as separate protocol and Metrics will be not.
 func Generate(sources map[string]astparser.ParsedFile, namespace string) map[string]Protocol {
 
 	r := regexp.MustCompile(".*V\\d+$")
