@@ -5,6 +5,8 @@ import (
 	"junolab.net/lib_api/timeapi"
 )
 
+const minorVersionPrimitivesV1 = "1"
+
 type PrimitivesV1 struct {
 	// comment here
 	Int       int               `json:"int"`

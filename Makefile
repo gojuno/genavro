@@ -8,5 +8,5 @@ clean:
 
 
 gen: clean build
-	cp ../ms_data_bridge/ms_data_bridge/* api/
+	cp ../../../junolab.net/ms_data_bridge/ms_data_bridge/* api/
 	bin/genavro -in api -o api/avro -n net.junolab.dwh -e "(easyjson.go|client|data_bridge|event_types|event_validator|message_types|metrics_counter|raw_message|requests|test_beqa|transport|validators)"

@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/gojuno/genavro/avro"
 	"github.com/mkorolyov/astparser"
-	"junolab.net/genavro/avro"
 )
 
 var (

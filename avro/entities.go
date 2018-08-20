@@ -4,6 +4,7 @@ type Protocol struct {
 	Namespace string   `json:"namespace"`
 	Protocol  string   `json:"protocol"`
 	Types     []Record `json:"types"`
+	Doc       string   `json:"doc,omitempty"`
 }
 
 type Record struct {

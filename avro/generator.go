@@ -61,12 +61,15 @@ type dep struct {
 	deps   []string
 }
 
-func Generate(sources map[string][]astparser.StructDef, namespace string) map[string]Protocol {
+func Generate(sources map[string]astparser.ParsedFile, namespace string) map[string]Protocol {
 
 	r := regexp.MustCompile(".*V\\d+$")
 	deps := map[string]dep{}
-	for _, structs := range sources {
-		for _, s := range structs {
+	versions := map[string]string{}
+
+	for _, parsedFile := range sources {
+		// build dependencies map
+		for _, s := range parsedFile.Structs {
 			// skip events
 			if r.Match([]byte(s.Name)) {
 				continue
@@ -74,16 +77,27 @@ func Generate(sources map[string][]astparser.StructDef, namespace string) map[st
 			deps[s.Name] = parseDep(s)
 		}
 
+		// build minor version map
+		for _, c := range parsedFile.Constants {
+			if strings.HasPrefix(c.Name, "minorVersion") {
+				ss := strings.Split(c.Name, "minorVersion")
+				if len(ss) == 2 {
+					versions[ss[1]] = c.Value
+				}
+			}
+		}
 	}
 
 	result := map[string]Protocol{}
-	for _, structs := range sources {
-		for _, s := range structs {
+	for _, parsedFile := range sources {
+		for _, s := range parsedFile.Structs {
 			// pass only events ends on
 			if !r.Match([]byte(s.Name)) {
 				continue
 			}
-			result[s.Name] = avroProtocol(s, deps, namespace)
+			p := avroProtocol(s, deps, namespace)
+			p.Doc = fmt.Sprintf("minorVersion=%s", versions[s.Name])
+			result[s.Name] = p
 		}
 
 	}
