@@ -22,6 +22,14 @@ var avroAuthType = Record{
 			Type: newUnion("string"),
 			Name: "user_id",
 		},
+		{
+			Type: newUnion("string"),
+			Name: "app_id",
+		},
+		{
+			Type: newUnion("string"),
+			Name: "app_version",
+		},
 	},
 }
 
