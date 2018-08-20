@@ -22,11 +22,11 @@ func TestGenerate(t *testing.T) {
 
 	protocols := Generate(sources, "junolab.net")
 	for name, protocol := range protocols {
-		got, err := json.Marshal(protocol)
+		got, err := json.MarshalIndent(protocol, "", "    ")
 		require.NoError(t, err)
 		want, err := ioutil.ReadFile(
 			fmt.Sprintf("fixtures_test/%s.avpr", name))
 		require.NoError(t, err)
-		assert.Equal(t, want, got)
+		assert.Equal(t, string(want), string(got))
 	}
 }
