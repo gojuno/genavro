@@ -19,10 +19,9 @@ type Record struct {
 
 // Field reflects field in avro record type.
 type Field struct {
-	Name    string      `json:"name"`
-	Doc     string      `json:"doc,omitempty"`
-	Type    interface{} `json:"type"`
-	Default interface{} `json:"default,omitempty"`
+	Name string      `json:"name"`
+	Doc  string      `json:"doc,omitempty"`
+	Type interface{} `json:"type"`
 }
 
 // Array is a array type of the field.
@@ -38,4 +37,4 @@ type Map struct {
 }
 
 // Union is a union type of the field. used for nullable fields.
-type Union [2]string
+type Union [2]interface{}

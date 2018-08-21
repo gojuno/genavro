@@ -17,8 +17,10 @@ type PrimitivesV1 struct {
 	String    string            `json:"string"`
 	Map       map[string]string `json:"map"`
 	Slice     []int             `json:"slice"`
+	MapOpt    map[string]string `json:"map_opt,omitempty"`
+	SliceOpt  []int             `json:"slice_opt,omitempty"`
 	Omitempty int               `json:"omitempty,omitempty"`
-	Ptr       *int              `json:"ptr"`
+	Ptr       *int              `json:"ptr,omitempty"`
 	ID        core.ID           `json:"id"`
 	Time      timeapi.Time      `json:"time"`
 	Duration  timeapi.Duration  `json:"duration"`

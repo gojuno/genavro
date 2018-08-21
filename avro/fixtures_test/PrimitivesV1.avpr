@@ -46,9 +46,31 @@
                     }
                 },
                 {
+                    "name": "map_opt",
+                    "type": [
+                        "null",
+                        {
+                            "type": "map",
+                            "values": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "slice_opt",
+                    "type": [
+                        "null",
+                        {
+                            "type": "array",
+                            "items": "int"
+                        }
+                    ]
+                },
+                {
                     "name": "omitempty",
-                    "type": "int",
-                    "default": 0
+                    "type": [
+                        "null",
+                        "int"
+                    ]
                 },
                 {
                     "name": "ptr",

@@ -188,7 +188,7 @@ func avroRecord(s astparser.StructDef, collectDeps func(tpe interface{})) Record
 
 		field.Type = avroType(f.FieldType)
 		if f.Omitempty {
-			field.Default = getDefaultValue(field.Type)
+			field.Type = newUnion(field.Type)
 		}
 
 		fields = append(fields, field)
@@ -216,7 +216,7 @@ func parseDep(s astparser.StructDef) dep {
 
 		field.Type = avroType(f.FieldType)
 		if f.Omitempty {
-			field.Default = getDefaultValue(field.Type)
+			field.Type = newUnion(field.Type)
 		}
 
 		if !avroIsSimpleType(field.Type) {
@@ -239,7 +239,7 @@ func avroType(t astparser.Type) interface{} {
 	case astparser.TypeSimple:
 		return avroSimpleType(v.Name)
 	case astparser.TypePointer:
-		return newUnion(fmt.Sprint(avroType(v.InnerType)))
+		return newUnion(avroType(v.InnerType))
 
 	case astparser.TypeArray:
 		return Array{Type: "array", Items: fmt.Sprint(avroType(v.InnerType))}
@@ -265,22 +265,17 @@ func avroType(t astparser.Type) interface{} {
 	}
 }
 
-func getDefaultValue(tpe interface{}) interface{} {
-	switch tpe {
-	case "int", "long", "float", "double":
-		return 0
-	case "string", "bytes":
-		return ""
-	case "boolean":
-		return false
+func newUnion(t interface{}) Union {
+	switch v := t.(type) {
+	case Union:
+		return v
+	case Array:
+		return Union{"null", t}
+	case Map:
+		return Union{"null", t}
 	default:
-		//log.Fatalf("unsupported avro type %s", tpe)
-		return nil
+		return Union{"null", fmt.Sprint(t)}
 	}
-}
-
-func newUnion(t string) Union {
-	return Union{"null", t}
 }
 
 func avroSimpleType(gotype string) string {

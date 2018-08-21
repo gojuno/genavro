@@ -152,7 +152,9 @@ func parseJSONTag(astTag *ast.BasicLit) (Tag, error) {
 		} else { // e.g. handle json:"field_name,omitempty" where
 			// tagValues[0] = '"field_name', so we need to cut first char "
 			t.JsonName = tagValues[0][1:len(tagValues[0])]
-			t.Omitempty = true
+			if strings.Index(tagValues[1], "omitempty") != -1 {
+				t.Omitempty = true
+			}
 		}
 		break
 	}
