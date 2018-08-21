@@ -14,11 +14,28 @@
         },
         {
             "type": "record",
+            "name": "Optional",
+            "fields": [
+                {
+                    "name": "int",
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "type": "record",
             "name": "StructV1",
             "fields": [
                 {
                     "name": "dep",
                     "type": "Dep"
+                },
+                {
+                    "name": "optional",
+                    "type": [
+                        "null",
+                        "Optional"
+                    ]
                 }
             ]
         },

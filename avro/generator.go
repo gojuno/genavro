@@ -165,6 +165,8 @@ func avroDepName(tpe interface{}) string {
 		return t.Values
 	case Array:
 		return avroDepName(t.Items)
+	case Union:
+		return avroDepName(t[1])
 	default:
 		return ""
 	}
