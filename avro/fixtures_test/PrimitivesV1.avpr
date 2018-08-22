@@ -4,7 +4,7 @@
     "types": [
         {
             "type": "record",
-            "name": "PrimitivesV1",
+            "name": "PayloadPrimitivesV1",
             "fields": [
                 {
                     "name": "int",
@@ -129,7 +129,7 @@
         },
         {
             "type": "record",
-            "name": "BaseV1",
+            "name": "PrimitivesV1",
             "fields": [
                 {
                     "name": "event_id",
@@ -149,6 +149,7 @@
                 },
                 {
                     "name": "minor_version",
+                    "doc": "minorVersion=1",
                     "type": "string"
                 },
                 {
@@ -160,10 +161,9 @@
                 },
                 {
                     "name": "payload",
-                    "type": "PrimitivesV1"
+                    "type": "PayloadPrimitivesV1"
                 }
             ]
         }
-    ],
-    "doc": "minorVersion=1"
+    ]
 }

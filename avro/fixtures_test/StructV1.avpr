@@ -24,7 +24,7 @@
         },
         {
             "type": "record",
-            "name": "StructV1",
+            "name": "PayloadStructV1",
             "fields": [
                 {
                     "name": "dep",
@@ -75,7 +75,7 @@
         },
         {
             "type": "record",
-            "name": "BaseV1",
+            "name": "StructV1",
             "fields": [
                 {
                     "name": "event_id",
@@ -95,6 +95,7 @@
                 },
                 {
                     "name": "minor_version",
+                    "doc": "minorVersion=1",
                     "type": "string"
                 },
                 {
@@ -106,10 +107,9 @@
                 },
                 {
                     "name": "payload",
-                    "type": "StructV1"
+                    "type": "PayloadStructV1"
                 }
             ]
         }
-    ],
-    "doc": "minorVersion=1"
+    ]
 }

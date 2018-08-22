@@ -33,37 +33,6 @@ var avroAuthType = Record{
 	},
 }
 
-var avroBaseV1Type = Record{
-	Name: "BaseV1",
-	Type: "record",
-	Fields: []Field{
-		{
-			Name: "event_id",
-			Type: "string",
-		},
-		{
-			Name: "request_id",
-			Type: "string",
-		},
-		{
-			Name: "event_ts",
-			Type: "long",
-		},
-		{
-			Name: "type",
-			Type: "string",
-		},
-		{
-			Name: "minor_version",
-			Type: "string",
-		},
-		{
-			Name: "auth",
-			Type: newUnion("Auth"),
-		},
-	},
-}
-
 type dep struct {
 	record Record
 	deps   []string
@@ -106,8 +75,7 @@ func Generate(sources map[string]astparser.ParsedFile, namespace string) map[str
 			if !r.Match([]byte(s.Name)) {
 				continue
 			}
-			p := avroProtocol(s, deps, namespace)
-			p.Doc = fmt.Sprintf("minorVersion=%s", versions[s.Name])
+			p := avroProtocol(s, deps, namespace, versions[s.Name])
 			result[s.Name] = p
 		}
 
@@ -116,11 +84,11 @@ func Generate(sources map[string]astparser.ParsedFile, namespace string) map[str
 	return result
 }
 
-func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace string) Protocol {
-	base := avroBaseV1Type
+func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace, minorVersion string) Protocol {
+	base := avroBaseV1Type(s.Name, minorVersion)
 	base.Fields = append(base.Fields, Field{
 		Name: "payload",
-		Type: s.Name,
+		Type: payloadName(s.Name),
 	})
 
 	protocol := Protocol{
@@ -137,6 +105,7 @@ func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace string) 
 			depIndex++
 		}
 	})
+	rs.Name = payloadName(rs.Name)
 
 	uniqueDepsIndex := map[string]int{}
 	for i, d := range notUniqueDeps {
@@ -155,6 +124,40 @@ func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace string) 
 	protocol.Types = append(append(uniqueDeps, rs), protocol.Types...)
 
 	return protocol
+}
+
+func avroBaseV1Type(name, minorVersion string) Record {
+	return Record{
+		Name: name,
+		Type: "record",
+		Fields: []Field{
+			{
+				Name: "event_id",
+				Type: "string",
+			},
+			{
+				Name: "request_id",
+				Type: "string",
+			},
+			{
+				Name: "event_ts",
+				Type: "long",
+			},
+			{
+				Name: "type",
+				Type: "string",
+			},
+			{
+				Name: "minor_version",
+				Type: "string",
+				Doc:  fmt.Sprintf("minorVersion=%s", minorVersion),
+			},
+			{
+				Name: "auth",
+				Type: newUnion("Auth"),
+			},
+		},
+	}
 }
 
 func avroDepName(tpe interface{}) string {
@@ -311,4 +314,8 @@ func avroIsSimpleType(avroType interface{}) bool {
 	}
 
 	return false
+}
+
+func payloadName(name string) string {
+	return fmt.Sprintf("Payload%s", name)
 }

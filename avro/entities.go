@@ -4,8 +4,8 @@ package avro
 type Protocol struct {
 	Namespace string   `json:"namespace"`
 	Protocol  string   `json:"protocol"`
-	Types     []Record `json:"types"`
 	Doc       string   `json:"doc,omitempty"`
+	Types     []Record `json:"types"`
 }
 
 // Record reflects avro record type schema.
