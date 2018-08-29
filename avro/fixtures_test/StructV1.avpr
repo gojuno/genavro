@@ -4,11 +4,82 @@
     "types": [
         {
             "type": "record",
+            "name": "Dep1",
+            "fields": [
+                {
+                    "name": "str",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "type": "record",
+            "name": "Dep2",
+            "fields": [
+                {
+                    "name": "str",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "type": "record",
+            "name": "Dep3",
+            "fields": [
+                {
+                    "name": "str",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "type": "record",
+            "name": "Dep4",
+            "fields": [
+                {
+                    "name": "str",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "type": "record",
             "name": "Dep",
             "fields": [
                 {
                     "name": "int",
                     "type": "int"
+                },
+                {
+                    "name": "dep1",
+                    "type": "Dep1"
+                },
+                {
+                    "name": "dep2_opt",
+                    "type": [
+                        "null",
+                        "Dep2"
+                    ]
+                },
+                {
+                    "name": "dep3_array",
+                    "type": [
+                        "null",
+                        {
+                            "type": "array",
+                            "items": "Dep3"
+                        }
+                    ]
+                },
+                {
+                    "name": "dep4_map",
+                    "type": [
+                        "null",
+                        {
+                            "type": "map",
+                            "values": "Dep4"
+                        }
+                    ]
                 }
             ]
         },

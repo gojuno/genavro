@@ -101,6 +101,14 @@ func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace, minorVe
 	depIndex := 0
 	rs := avroRecord(s, func(tpe interface{}) {
 		if d := avroDep(deps, tpe); d != nil {
+			for _, depOfDep := range d.deps {
+				if dd, ok := deps[depOfDep]; ok {
+					notUniqueDeps[depIndex] = dd
+					depIndex++
+				}
+
+			}
+
 			notUniqueDeps[depIndex] = *d
 			depIndex++
 		}
@@ -223,7 +231,7 @@ func parseDep(s astparser.StructDef) dep {
 		}
 
 		if !avroIsSimpleType(field.Type) {
-			deps = append(deps, fmt.Sprint(field.Type))
+			deps = append(deps, avroInnerType(field.Type))
 		}
 
 		fields = append(fields, field)
@@ -318,4 +326,19 @@ func avroIsSimpleType(avroType interface{}) bool {
 
 func payloadName(name string) string {
 	return fmt.Sprintf("Payload%s", name)
+}
+
+func avroInnerType(t interface{}) string {
+	switch v := t.(type) {
+	case Array:
+		return avroInnerType(v.Items)
+	case Map:
+		return v.Values
+	case Union:
+		return avroInnerType(v[1])
+	case string:
+		return v
+	default:
+		return fmt.Sprint(t)
+	}
 }
