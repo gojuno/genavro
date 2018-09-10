@@ -44,6 +44,26 @@
         },
         {
             "type": "record",
+            "name": "Dep5",
+            "fields": [
+                {
+                    "name": "str",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "type": "record",
+            "name": "Dep6",
+            "fields": [
+                {
+                    "name": "dep_5",
+                    "type": "Dep5"
+                }
+            ]
+        },
+        {
+            "type": "record",
             "name": "Dep",
             "fields": [
                 {
@@ -80,6 +100,10 @@
                             "values": "Dep4"
                         }
                     ]
+                },
+                {
+                    "name": "dep_with_dep",
+                    "type": "Dep6"
                 }
             ]
         },

@@ -101,13 +101,7 @@ func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace, minorVe
 	depIndex := 0
 	rs := avroRecord(s, func(tpe interface{}) {
 		if d := avroDep(deps, tpe); d != nil {
-			for _, depOfDep := range d.deps {
-				if dd, ok := deps[depOfDep]; ok {
-					notUniqueDeps[depIndex] = dd
-					depIndex++
-				}
-
-			}
+			findDeps(*d, deps, notUniqueDeps, &depIndex)
 
 			notUniqueDeps[depIndex] = *d
 			depIndex++
@@ -117,7 +111,10 @@ func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace, minorVe
 
 	uniqueDepsIndex := map[string]int{}
 	for i, d := range notUniqueDeps {
-		uniqueDepsIndex[d.record.Name] = i
+		currentI, ok := uniqueDepsIndex[d.record.Name]
+		if currentI > i || !ok {
+			uniqueDepsIndex[d.record.Name] = i
+		}
 	}
 
 	uniqueDeps := make([]Record, 0, len(uniqueDepsIndex))
@@ -132,6 +129,19 @@ func avroProtocol(s astparser.StructDef, deps map[string]dep, namespace, minorVe
 	protocol.Types = append(append(uniqueDeps, rs), protocol.Types...)
 
 	return protocol
+}
+
+func findDeps(d dep, deps map[string]dep, notUniqueDeps map[int]dep, depIndex *int) {
+	for _, depOfDep := range d.deps {
+		if dd, ok := deps[depOfDep]; ok {
+			if len(dd.deps) > 0 {
+				findDeps(dd, deps, notUniqueDeps, depIndex)
+			}
+
+			notUniqueDeps[*depIndex] = dd
+			*depIndex++
+		}
+	}
 }
 
 func avroBaseV1Type(name, minorVersion string) Record {
@@ -203,10 +213,7 @@ func avroRecord(s astparser.StructDef, collectDeps func(tpe interface{})) Record
 		}
 
 		fields = append(fields, field)
-
-		if collectDeps != nil {
-			collectDeps(field.Type)
-		}
+		collectDeps(field.Type)
 	}
 
 	return Record{
@@ -253,7 +260,7 @@ func avroType(t astparser.Type) interface{} {
 		return newUnion(avroType(v.InnerType))
 
 	case astparser.TypeArray:
-		return Array{Type: "array", Items: fmt.Sprint(avroType(v.InnerType))}
+		return Array{Type: "array", Items: avroType(v.InnerType)}
 
 	case astparser.TypeMap:
 		return Map{Type: "map", Values: fmt.Sprint(avroType(v.ValueType))}
@@ -319,6 +326,8 @@ func avroIsSimpleType(avroType interface{}) bool {
 		case "int", "long", "float", "double", "boolean", "bytes", "string":
 			return true
 		}
+	case Union:
+		return avroIsSimpleType(v[1])
 	}
 
 	return false
