@@ -130,6 +130,7 @@
         {
             "type": "record",
             "name": "PrimitivesV1",
+            "doc": "@minorVersion=1",
             "fields": [
                 {
                     "name": "event_id",

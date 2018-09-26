@@ -171,6 +171,7 @@
         {
             "type": "record",
             "name": "StructV1",
+            "doc": "@minorVersion=1",
             "fields": [
                 {
                     "name": "event_id",

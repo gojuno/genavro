@@ -146,6 +146,7 @@ func findDeps(d dep, deps map[string]dep, notUniqueDeps map[int]dep, depIndex *i
 
 func avroBaseV1Type(name, minorVersion string) Record {
 	return Record{
+		Doc:  "@minorVersion=" + minorVersion,
 		Name: name,
 		Type: "record",
 		Fields: []Field{
